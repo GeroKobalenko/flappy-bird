@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, Platform } from '@ionic/angular';
-import { ComponentsModule } from './components/components.module';
+import { Platform } from '@ionic/angular';
+import { Bird } from '../models/bird';
 
 @Component({
   selector: 'app-home',
@@ -9,6 +8,7 @@ import { ComponentsModule } from './components/components.module';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+
   alturaContenedor!: number;
   anchuraContenedor!: number;
 
@@ -19,9 +19,11 @@ export class HomePage implements OnInit {
 
   puntaje: number = 0;
 
-  birdHeight: number = 38;
-  birdWidth: number = 43;
-  birdPosition: number = 300;
+  bird: Bird = new Bird({
+    height: 38,
+    width: 43,
+    top: 300
+  });
 
   obstacleHeight: number = 0;
   obstacleWidth: number = 52;
@@ -45,25 +47,11 @@ export class HomePage implements OnInit {
     this.puntaje = 0;
   }
 
-  setTamanioContenedor() {
-    this.alturaContenedor = this.plataforma.height();
-    this.anchuraContenedor =
-      this.plataforma.width() < 576 ? this.plataforma.width() : 576;
+  public saltar() {
+    this.bird.saltar();
   }
 
-  addGravity() {
-    let gravedad = 4.5;
-    if (this.juegoEmpezado) this.birdPosition += gravedad;
-  }
-
-  saltar() {
-    if (this.juegoEmpezado) {
-      if (this.birdPosition < this.birdHeight) this.birdPosition = 0;
-      else this.birdPosition -= 60;
-    }
-  }
-
-  playMusica() {
+  public playMusica() {
     this.musicaActiva = !this.musicaActiva;
 
     if (this.musicaActiva) {
@@ -74,7 +62,17 @@ export class HomePage implements OnInit {
     }
   }
 
-  moverObstaculo() {
+  private setTamanioContenedor() {
+    this.alturaContenedor = this.plataforma.height();
+    this.anchuraContenedor =
+      this.plataforma.width() < 576 ? this.plataforma.width() : 576;
+  }
+
+  private addGravity() {
+    if (this.juegoEmpezado) this.bird.caer();
+  }
+
+  private moverObstaculo() {
     let speed: number = 6;
     if (this.anchuraContenedor < 400) speed = 4;
     if (this.juegoEmpezado && this.obstaclePosition >= this.obstacleWidth)
@@ -87,16 +85,16 @@ export class HomePage implements OnInit {
     this.checkearColision();
   }
 
-  setGameOver(){
+  private setGameOver(){
     this.juegoTerminado = true;
     this.juegoEmpezado = false;
-    this.birdPosition = 300;
+    this.bird.top = 300;
   }
 
-  checkearColision(){
-    let colisionObtaculoArriba = this.birdPosition >= 0 && this.birdPosition < this.obstacleHeight;
-    let colisionObtaculoAbajo = this.birdPosition >= this.alturaContenedor - (this.alturaContenedor - this.obstacleGap - this.obstacleHeight) - this.birdHeight;
-    let colisionSuelo = (this.birdPosition + 40) >= this.alturaContenedor;
+  private checkearColision(){
+    let colisionObtaculoArriba = this.bird.top >= 0 && this.bird.top < this.obstacleHeight;
+    let colisionObtaculoAbajo = this.bird.top >= this.alturaContenedor - (this.alturaContenedor - this.obstacleGap - this.obstacleHeight) - this.bird.height;
+    let colisionSuelo = (this.bird.top + 40) >= this.alturaContenedor;
 
     if (colisionSuelo) this.setGameOver();
 
@@ -107,7 +105,7 @@ export class HomePage implements OnInit {
        }
   }
 
-  resetearPositionObstaculo() {
+  private resetearPositionObstaculo() {
     this.obstaclePosition = this.anchuraContenedor;
     this.obstacleHeight = Math.floor(
       Math.random() * (this.alturaContenedor - this.obstacleGap)

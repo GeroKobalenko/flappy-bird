@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Bird } from 'src/app/models/bird';
 
 @Component({
   selector: 'bird',
@@ -7,9 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class BirdComponent  implements OnInit {
 
-  @Input() height!: number;
-  @Input() width!: number;
-  @Input() top!: number;
+  @Input() bird: Bird = new Bird();
 
   constructor() { }
 
