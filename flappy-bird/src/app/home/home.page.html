@@ -1,0 +1,70 @@
+<ion-content>
+
+  <div class="d-flex-center wrapper" (click)="saltar()">
+
+    <div class="background" [ngStyle]="{
+    'background-size': anchuraContenedor+'px ' + alturaContenedor+'px',
+    'width': anchuraContenedor+'px', 
+    'height': alturaContenedor+'px'}">
+
+    <div *ngIf="!juegoEmpezado" class="d-flex-center text">
+      <section>
+        <img class="bird-logo" src="/assets/images/bird.gif" alt="">
+
+        <div *ngIf="!juegoTerminado">
+          <div class="subtext">
+            Flappy Bird
+          </div>
+        </div>
+
+        <div *ngIf="juegoTerminado">
+          <div class="subtext">
+            Juego terminado
+          </div>
+          Tu puntaje: {{puntaje}}
+        </div>
+
+        <ion-button (click)="empezarJuego()" color="warning" mode="ios" shape="round">
+          {{!juegoTerminado ? 'Jugar' : 'Volver a jugar'}}
+          <ion-icon slot="end" name="play"></ion-icon>
+        </ion-button>
+
+        <ion-button (click)="playMusica()" color="success" mode="ios" shape="round">
+          <ion-icon [name]="musicaActiva ? 'volume-mute-outline' : 'volume-high-outline'"></ion-icon>
+        </ion-button>
+      </section>
+    </div>
+
+    <section *ngIf="juegoEmpezado">
+
+    <div class="score">{{puntaje}}</div>
+
+      <obstacle 
+      [height]="obstacleHeight" 
+      [width]="obstacleWidth" 
+      [left]="obstaclePosition"
+      [top]="0"
+      [rotation]="180">
+      </obstacle>
+
+      <bird 
+      [height]="birdHeight" 
+      [width]="birdWidth" 
+      [top]="birdPosition">
+    </bird>
+
+    <obstacle 
+    [height]="alturaContenedor - obstacleGap - obstacleHeight" 
+    [width]="obstacleWidth" 
+    [left]="obstaclePosition"
+    [top]="alturaContenedor - ((alturaContenedor - obstacleGap - obstacleHeight) + obstacleHeight)"
+    [rotation]="0">
+    </obstacle>
+
+    </section>
+
+    </div>
+
+  </div>
+
+</ion-content>

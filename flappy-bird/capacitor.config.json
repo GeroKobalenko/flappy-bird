@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "flappy-bird",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
